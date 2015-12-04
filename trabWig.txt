@@ -1,0 +1,92 @@
+caminho(curitiba,ponta grossa,116).
+caminho(curitiba,colombo,19).
+caminho(curitiba,guarapuava,256).
+caminho(londrina,maringa,98).
+caminho(londrina,ponta grossa,274).
+caminho(londrina,apucarana,54).
+caminho(maringa,guarapuava,288).
+caminho(maringa,umuarama,165).
+caminho(maringa,paranavai,75).
+caminho(ponta grossa,guarapuava,163).
+caminho(ponta grossa,telemaco,135).
+caminho(cascavel,toledo,46).
+caminho(cascavel,umuarama,169).
+caminho(cascavel,guarapuava,248).
+caminho(foz do iguacu,cascavel,139).
+caminho(foz do iguacu,toledo,153).
+caminho(guarapuava,campo mourao,206).
+caminho(guarapuava,ivaipora,161).
+caminho(paranagua,curitiba,90).
+caminho(apucarana,maringa,61).
+caminho(apucarana,campo mourao,148).
+caminho(apucarana,ortigueira,112).
+caminho(toledo,umuarama,131).
+caminho(toledo,guarapuava,290).
+caminho(toledo,campo mourao,189).
+
+
+reta(curitiba,ponta grossa,97).
+reta(curitiba,guarapuava,75).
+reta(londrina,maringa,88).
+reta(maringa,paranavai,67).
+reta(ponta grossa,guarapuava,135).
+reta(cascavel,toledo,38).
+reta(foz do iguacu,cascavel,129).
+reta(colombo,curitiba,16).
+reta(guarapuava,ponta grossa,137).
+reta(araucaria,curitiba22).
+reta(toledo,cascavel,39).
+reta(campo mourao,ivaipora,73).
+reta(apucarana,londrina,42).
+reta(maringa,apucarana,49).
+reta(campo mourao,umuarama,101).
+
+
+
+
+
+
+%O TRAB ESTA PRONTO \/
+%Pesquisa o caminho de uma cidade (Origem) até o destino (Bucharest):
+pesquisa(romenia):-
+	write('Digite sua cidade de origem: '),	read(Origem),
+	write('Esta em: '),write(Origem),write('\n\n'),
+	buscagulosa(Origem,bucharest). %inicia a busca da origem ate bucharest
+
+
+%Busca Gulosa:
+buscagulosa(Origem,Destino):-
+	linhareta(Origem,Destino,L),
+	L == 0, %significa que ja chegou em Bucharest
+	!.
+
+buscagulosa(Origem,Destino):-
+	findall(X,estrada(Origem,X,_),L), %gera uma lista L com todas as cidades possiveis para ir estando em Origem
+	min(L,Destino,Proximo), %verifica qual a cidade na lista L com o menor Straight Line Distance e a retorna como Proximo
+	write('Operador: Vai de '),write(Origem),write(' para '),write(Proximo),
+	write('\n'),write('Esta em: '),write(Proximo),write('\n'),
+	pergunta(Proximo,Destino). %faz a pergunta antes da proxima iteracao da busca
+
+
+%Pergunta se deseja continuar a cada iteracao da busca:
+pergunta(Origem,Destino):-
+	write('\nQuer continuar? '),read(X),
+	X == 's',
+	buscagulosa(Origem,Destino). %continua a busca caso a resposta seja Sim
+pergunta(_,_):-!.
+
+
+%Encontra a cidade com o menor straighline em uma lista:
+min([X],_,X):-!.
+
+min([X,Y|XS],Destino,M):-
+	linhareta(X,Destino,A),
+	linhareta(Y,Destino,B),
+	A<B,
+	min([X|XS],Destino,M).
+
+min([X,Y|XS],Destino,M):-
+	linhareta(X,Destino,A),
+	linhareta(Y,Destino,B),
+	A>=B,
+	min([Y|XS],Destino,M).
