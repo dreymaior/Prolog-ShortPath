@@ -1,5 +1,7 @@
-%Gustavo Henrique Gomes Matsushita - RA 79194
-%TRABALHO 1 - PROLOG - BUSCA GULOSA
+%Andrey Souto Maior - RA 78788
+%Lucas Franco Bernardes - RA 80824
+
+%TRABALHO 1 - PROLOG - Shortest Path
 
 
 %Distancia em linha reta (Straight Line Distance) para Bucarest:
