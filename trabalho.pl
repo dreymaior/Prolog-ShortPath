@@ -19,7 +19,7 @@ edge(paranavai, portoRico, 102).
 edge(paranavai, cidadeGaucha, 79).
 edge(cidadeGaucha, maringa, 146).
 edge(cidadeGaucha, paranavai, 79).
-edge(cidadeGaucha, portoRico 95).
+edge(cidadeGaucha, portoRico, 95).
 edge(cidadeGaucha, umuarama, 70).
 edge(cidadeGaucha, cruzeiroDoOeste, 76).
 edge(cruzeiroDoOeste, cidadeGaucha, 76).
@@ -146,23 +146,26 @@ edge(chopinzinho, guarapuava, 152).
 edge(chopinzinho, boaVistaDaAparecida, 167).
 
 %init
-start() :-
+start :-
     write('Digite a cidade de origem: '), read(Source),
     write('Digite a cidade de destino: '), read(Destine),
-    path(Source, Destine, Length).
+    path(Source, Destine, Length, List),
+    %Esse write eh debug por enquanto
+    write(List),
+    write(Length).
 
-path(Source, Destine, Length) :-
+path(Source, Destine, Length, List) :-
     Source == Destine, 
     Length is 0, !.
 
-path(Source, Destine, Length) :-
+path(Source, Destine, Length, List) :-
     edge(Source, Destine, L),
     Length is L, !.
 
-path(Source, Destine, Length) :-
-    findall([Destine, Len], edge(Source, X, Len), List),
+path(Source, Destine, Length, List) :-
+    findall([X, Len], edge(Source, X, Len), List),
     min(List, Next, Short),
-    path(Next, Destine, Length0),
+    path(Next, Destine, Length0, List),
     Length is Length0 + Short.
 
 min([[X, Y]], X, Y) :- !.
