@@ -149,25 +149,37 @@ edge(chopinzinho, boaVistaDaAparecida, 167).
 start :-
     write('Digite a cidade de origem: '), read(Source),
     write('Digite a cidade de destino: '), read(Destine),
-    path(Source, Destine, Length, List),
-    %Esse write eh debug por enquanto
-    write(List),
+    path(Source, Destine, Length, [_]),
     write(Length).
 
-path(Source, Destine, Length, List) :-
+path(Source, Destine, Length, Before) :-
+    edge(Source, _, _),
+    edge(_, Destine, _),
     Source == Destine, 
     Length is 0, !.
 
-path(Source, Destine, Length, List) :-
+path(Source, Destine, Length, Before) :-
     edge(Source, Destine, L),
     Length is L, !.
 
-path(Source, Destine, Length, List) :-
+path(Source, Destine, Length, Before) :-
+    write(Source), write(' '), write(Destine), write(' '),
+    write(Before), write('\n'),
     findall([X, Len], edge(Source, X, Len), List),
-    min(List, Next, Short),
-    path(Next, Destine, Length0, List),
+    subtract(List, Before, List0),
+    min(List0, Next, Short),
+    append(Before, [[Source, _]], Before0),
+    path(Next, Destine, Length0, Before0),
     Length is Length0 + Short.
 
+%path(Source, Destine, Length, Before) :-
+%    write(Source), write('\n'),
+%    findall(X, edge(Source, X, _), List),
+%    remove(Before, List, List0),
+%    foreach(member(V, List0), path(V, Destine, L, Source)),
+%    write('\n').
+
+%Alterar
 min([[X, Y]], X, Y) :- !.
 
 min([[X1, Y1], [X2, Y2]|Xs], Next, Short) :-
@@ -176,3 +188,12 @@ min([[X1, Y1], [X2, Y2]|Xs], Next, Short) :-
     ;
         min([[X1, Y1]|Xs], Next, Short)
     ).
+%FimAlterar
+
+remove(X, [X|Xs], Xs).
+
+remove(X, [Y|Xs], [Y|Xz]) :-
+    remove(X, Xs, Xz).
+
+remove(X, Xs, Xs) :-
+    not(member(X, Xs)).
