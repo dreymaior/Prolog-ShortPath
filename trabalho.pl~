@@ -73,7 +73,7 @@ restart :-
         Opcao == 4, halt,!
         ;
         restart
-    ).
+    ),
 
 abrirArq :-
     write('\n\tInforme o arquivo de dados: '),
@@ -81,9 +81,9 @@ abrirArq :-
     consult(Arquivo).
 
 leitura(Origem, Destino, Piso) :-
-    write('\t\tOrigem: '), read(Origem),
-    write('\t\tDestino: '), read(Destino),
-    write('\t\tQualidade minima do piso (1~5): '), read(Piso).
+    write('Origem: '), read(Origem),
+    write('Destino: '), read(Destino),
+    write('Qualidade minima do piso (1~5): '), read(Piso).
 
 % -- Opcoes
 
@@ -92,22 +92,7 @@ menorDistancia :-
     findall([P, L], path(Origem, Destino, Piso, [], [Origem], L, P), List),
     minimum(List, [Path, Length]),
     write('\t- Distancia: '), write(Length), write('\n'),
-    write('\t- Rota:\n'), write('\t'), write([Origem | Path]), write('\n\n').
-
-menorDuracao :-
-	leitura(Origem, Destino, Piso),
-    findall([P, L], pathDuracao(Origem, Destino, Piso, [], [Origem], L, P), List),
-    minimum(List, [Path, Length]),
-    write('\t- Duracao: '), write(Length), write('\n'),
-    write('\t- Rota:\n'), write('\t'), write([Origem | Path]), write('\n\n').
-
-menorCusto :-
-	leitura(Origem, Destino, Piso),
-	write('\t\tConsumo médio do veículo: '), read(Consumo),
-    findall([P, L], pathCusto(Origem, Destino, Piso, Consumo, [], [Origem], L, P), List),
-    minimum(List, [Path, Length]),
-    write('\t- Custo: '), write(Length), write('\n'),
-    write('\t- Rota:\n'), write('\t'), write([Origem | Path]), write('\n\n').
+    write('\t- Rota:\n'), write(Path), write('\n\n').
 
 % -- Caminho minimo distancia--
 
@@ -127,14 +112,14 @@ path(A, B, Piso, P, V, L, Path) :-
     edge(Id, A, N, Len, settings(X, Y, Z)),
     X >= Piso,
     \+ member(N, V),
-    path(N, B, Piso, P, [N | V], L0, Path0),
+    path(N, B, P, [N | V], L0, Path0),
     Path = [N | Path0],
     L is L0 + Len
     ;
     edge(Id, N, A, Len, settings(X, Y, Z)),
     X >= Piso,
     \+ member(N, V),
-    path(N, B, Piso, P, [N | V], L0, Path0),
+    path(N, B, P, [N | V], L0, Path0),
     Path = [N | Path0],
     L is L0 + Len.
 
@@ -161,7 +146,7 @@ pathDuracao(A, B, Piso, P, V, L, Path) :-
     X >= Piso,
     \+ member(N, V),
 	duracao(Len, Z, D),
-    pathDuracao(N, B, Piso, P, [N | V], D0, Path0),
+    pathDuracao(N, B, P, [N | V], D0, Path0),
     Path = [N | Path0],
     L is D0 + D
     ;
@@ -169,7 +154,7 @@ pathDuracao(A, B, Piso, P, V, L, Path) :-
     X >= Piso,
     \+ member(N, V),
 	duracao(Len, Z, D),
-    pathDuracao(N, B, Piso, P, [N | V], D0, Path0),
+    pathDuracao(N, B, P, [N | V], D0, Path0),
     Path = [N | Path0],
     L is D0 + D.
 
@@ -197,7 +182,7 @@ pathCusto(A, B, Piso, Consumo, P, V, L, Path) :-
     X >= Piso,
     \+ member(N, V),
 	custo(Len, Y, Z, Consumo, C),
-    pathCusto(N, B, Piso, Consumo, P, [N | V], C0, Path0),
+    pathCusto(N, B, P, [N | V], C0, Path0),
     Path = [N | Path0],
     L is C0 + C
     ;
@@ -205,7 +190,7 @@ pathCusto(A, B, Piso, Consumo, P, V, L, Path) :-
     X >= Piso,
     \+ member(N, V),
 	custo(Len, Y, Z, Consumo, C),
-    pathCusto(N, B, Piso, Consumo, P, [N | V], C0, Path0),
+    pathCusto(N, B, P, [N | V], C0, Path0),
     Path = [N | Path0],
     L is C0 + C.
 
